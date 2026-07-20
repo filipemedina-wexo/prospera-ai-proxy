@@ -1,6 +1,3 @@
-Exit code: 0
-Wall time: 0.3 seconds
-Output:
 require("dotenv").config(); // carrega o .env
 
 const express = require("express");
@@ -17,7 +14,7 @@ const geminiApiKey = process.env.GEMINI_API_KEY;
 const geminiModel = process.env.GEMINI_MODEL || "gemini-3.5-flash";
 
 if (!geminiApiKey) {
-    console.error("GEMINI_API_KEY nÃ£o configurada.");
+    console.error("GEMINI_API_KEY nao configurada.");
     process.exit(1);
 }
 
@@ -29,7 +26,7 @@ app.post("/gemini", async (req, res) => {
         const { prompt, context } = req.body;
 
         if (!prompt) {
-            return res.status(400).json({ error: "Prompt Ã© obrigatÃ³rio." });
+            return res.status(400).json({ error: "Prompt e obrigatorio." });
         }
 
         const model = genAI.getGenerativeModel({
@@ -38,7 +35,7 @@ app.post("/gemini", async (req, res) => {
 
         const result = await model.generateContent([
             context || "",
-            "\n\nUsuÃ¡rio:\n" + prompt
+            "\n\nUsuario:\n" + prompt
         ]);
 
         const text = result.response.text();
@@ -56,4 +53,3 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Prospera AI Proxy rodando na porta ${PORT}`);
 });
-
