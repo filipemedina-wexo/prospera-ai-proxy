@@ -1,3 +1,6 @@
+Exit code: 0
+Wall time: 0.3 seconds
+Output:
 require("dotenv").config(); // carrega o .env
 
 const express = require("express");
@@ -10,7 +13,15 @@ app.use(express.json());
 app.use(cors());
 
 // Cliente do Gemini usando a KEY do .env / Env Vars
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const geminiApiKey = process.env.GEMINI_API_KEY;
+const geminiModel = process.env.GEMINI_MODEL || "gemini-3.5-flash";
+
+if (!geminiApiKey) {
+    console.error("GEMINI_API_KEY nÃ£o configurada.");
+    process.exit(1);
+}
+
+const genAI = new GoogleGenerativeAI(geminiApiKey);
 
 // Rota simples para conversar com o Gemini
 app.post("/gemini", async (req, res) => {
@@ -18,16 +29,16 @@ app.post("/gemini", async (req, res) => {
         const { prompt, context } = req.body;
 
         if (!prompt) {
-            return res.status(400).json({ error: "Prompt é obrigatório." });
+            return res.status(400).json({ error: "Prompt Ã© obrigatÃ³rio." });
         }
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash"
+            model: geminiModel
         });
 
         const result = await model.generateContent([
             context || "",
-            "\n\nUsuário:\n" + prompt
+            "\n\nUsuÃ¡rio:\n" + prompt
         ]);
 
         const text = result.response.text();
@@ -45,3 +56,4 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Prospera AI Proxy rodando na porta ${PORT}`);
 });
+
